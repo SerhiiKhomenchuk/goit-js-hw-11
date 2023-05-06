@@ -12,9 +12,45 @@ body {
   line-height: 1.5;
 }
 
-#search-box {
+#search-form {
   font: inherit;
   padding: 8px;
   max-width: 320px;
   margin-bottom: 16px;
+}
+.gallery {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding: 30px;
+  margin-top: 10px;
+  justify-content: center;
+}
+.image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+.photo-card {
+  max-width: 250px;
+  min-height: 208px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.25);
+  flex-basis: calc((100% - 4 * 50px) / 4);
+
+  transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.photo-card:hover {
+  transform: scale(1.1);
+}
+.info {
+  display: flex;
+  justify-content: space-between;
+  
+}
+
+.info-item {
+  font-size: 10px;
+  text-align: center;
 }
