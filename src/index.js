@@ -1,8 +1,8 @@
 // import SimpleLightbox from "simplelightbox";
 // // Додатковий імпорт стилів
 // import "simplelightbox/dist/simple-lightbox.min.css";
-// import simpleLightbox from "simplelightbox";
-// import "simplelightbox/dist/simple-lightbox.min.css";
+import simpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 import Notiflix from "notiflix";
 const form = document.querySelector("#search-form");
 const gallery = document.querySelector(".gallery");
