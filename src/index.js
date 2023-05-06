@@ -23,6 +23,7 @@ const observer = new IntersectionObserver(onInfinityScroll, options);
 form.addEventListener("submit", onSubmit);
 function onSubmit(evt) {
   evt.preventDefault();
+  gallery.innerHTML =""
   searchQuery = evt.target.elements.searchQuery.value.trim();
   // console.log(searchQuery);
     fetchImages()
