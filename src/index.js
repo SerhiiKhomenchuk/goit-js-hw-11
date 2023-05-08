@@ -1,6 +1,5 @@
-
-// import SimpleLightbox from "simplelightbox"
-// import "simplelightbox/dist/simple-lightbox.min.css";
+import simpleLightbox from "simplelightbox";
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import Notiflix from "notiflix";
 import axios from "axios";
 
@@ -11,44 +10,56 @@ const guard = document.querySelector('.js-guard');
 // console.log(gallery);
 let page = 1;
 const per_page = 40;
-// var litebox = new SimpleLightbox('.some-element a');
-
 const options = {
   root: null,
   rootMargin: '500px',
   threshold: 0.0,
 };
 const observer = new IntersectionObserver(onInfinityScroll, options);
+const lightbox = new simpleLightbox('.gallery a', {
+    doubleTapZoom: 1.5,
+    captionsData: "alt",
+    captionDelay: 250
+});
 
 form.addEventListener("submit", onSubmit);
-function onSubmit(evt) {
-  evt.preventDefault();
+async function onSubmit(evt) {
+  try {
+    evt.preventDefault();
+  page = 1;
   gallery.innerHTML =""
   searchQuery = evt.target.elements.searchQuery.value.trim();
-  // console.log(searchQuery);
-    fetchImages()
-      .then((data) => {
-        if (!data.hits.length) {
+  observer.unobserve(guard);
+  if (!searchQuery) {
+    Notiflix.Notify.failure('Please, enter query!');
+    return;
+  }
+    
+    const response = await fetchImages();
+    const { hits, totalHits } = response;
+     if (!hits.length) {
         Notiflix.Notify.info("Sorry, there are no images matching your search query. Please try again.")
       gallery.innerHTML =""
-        return  
-        }
-        if (data.hits) {
+        return
+     }
+    if (hits) {
         gallery.innerHTML = '';
-        Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-        gallery.insertAdjacentHTML('beforeend', createMarkup(data.hits));
-        // simpleLightbox.refresh();
-        }
-        if (page !== data.totalHits) {
-        console.log(page);
-        console.log(data.totalHits);
+        Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+        gallery.insertAdjacentHTML('beforeend', createMarkup(hits));
+         lightbox.refresh();
+    }
+    if (page !== totalHits) {
+        
         observer.observe(guard);
       }
-        gallery.innerHTML = createMarkup(data.hits);
+        gallery.innerHTML = createMarkup(hits);
 
-      })
-      .catch((err) => console.log(err))
-  
+    
+
+  } catch (error) {
+    console.error(error);
+    
+  }
   
 }
 
@@ -71,7 +82,7 @@ async function fetchImages() {
     try {
     const resp = await axios.get(URL);
     const { data } = resp;
-    console.log(resp);
+   
   return data;
   } catch (error) {
     console.error(error);
@@ -79,28 +90,35 @@ async function fetchImages() {
    
 }
 
- function onInfinityScroll(entries, observer) {
-  entries.forEach(entry => {
-    
-    if (entry.isIntersecting) {
-      page += 1;
-      console.log(entry);
-      fetchImages(page).then(data => {
-        gallery.insertAdjacentHTML('beforeend', createMarkup(data.hits));
-        // simpleLightbox.refresh();
-
-        const totalPages = Math.ceil(data.totalHits / per_page);
+function onInfinityScroll(entries, observer) {
+  entries.forEach(async (entry) => {
+    try {
+      if (entry.isIntersecting) {
+        page += 1;
+        console.log(entry);
+        
+        const response = await fetchImages(page);
+        const { hits,totalHits } = response;
+        gallery.insertAdjacentHTML('beforeend', createMarkup(hits));
+        lightbox.refresh();
+        const totalPages = Math.ceil(totalHits / per_page);
         if (page === totalPages) {
-          console.log("the end");
           observer.unobserve(guard);
           Notiflix.Notify.info(
             'We are sorry, but you have reached the end of search results.'
           );
+
         }
-      }).catch(err => console.log(err));
+      }
     }
-  });
- }
+    catch (error) {
+      console.error(error);
+    }
+  }
+  );
+}
+
+ 
 
 function createMarkup(arrOfImgs) {
   return arrOfImgs.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => 
@@ -130,11 +148,3 @@ function createMarkup(arrOfImgs) {
   
     
 }
-let litebox = new SimpleLightbox(".gallery .gallery-link", {
-      // enableKeyboard,
-      captionDelay: 250,
-      captionsData: "alt",
-      
-
-   
-})
