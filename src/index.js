@@ -1,3 +1,4 @@
+
 import simpleLightbox from "simplelightbox";
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import Notiflix from "notiflix";
@@ -7,7 +8,7 @@ const form = document.querySelector("#search-form");
 const gallery = document.querySelector(".gallery");
 let searchQuery = form.searchQuery.value
 const guard = document.querySelector('.js-guard');
-// console.log(gallery);
+
 let page = 1;
 const per_page = 40;
 const options = {
@@ -46,7 +47,7 @@ async function onSubmit(evt) {
         gallery.innerHTML = '';
         Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
         gallery.insertAdjacentHTML('beforeend', createMarkup(hits));
-         lightbox.refresh();
+      lightbox.refresh();
     }
     if (page !== totalHits) {
         
@@ -95,8 +96,7 @@ function onInfinityScroll(entries, observer) {
     try {
       if (entry.isIntersecting) {
         page += 1;
-        console.log(entry);
-        
+                
         const response = await fetchImages(page);
         const { hits,totalHits } = response;
         gallery.insertAdjacentHTML('beforeend', createMarkup(hits));
@@ -123,7 +123,7 @@ function onInfinityScroll(entries, observer) {
 function createMarkup(arrOfImgs) {
   return arrOfImgs.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => 
     `<div class="photo-card">
-        <a  href="${webformatURL} class="gallery-link"><img class = "image" src="${largeImageURL}" alt="${tags}" loading="lazy" />
+        <a  href="${webformatURL}" class="gallery-link"><img class = "image" src="${largeImageURL}" alt="${tags}" loading="lazy" />
         </a>
           <div class="info">
           <p class="info-item">
