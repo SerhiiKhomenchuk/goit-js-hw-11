@@ -6,9 +6,10 @@ import axios from "axios";
 
 const form = document.querySelector("#search-form");
 const gallery = document.querySelector(".gallery");
-let searchQuery = form.searchQuery.value
-const guard = document.querySelector('.js-guard');
 
+const guard = document.querySelector('.js-guard');
+let searchQuery = form.searchQuery.value
+let totalPages;
 let page = 1;
 const per_page = 40;
 const options = {
@@ -44,16 +45,17 @@ async function onSubmit(evt) {
         return
      }
     if (hits) {
-        gallery.innerHTML = '';
-        Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
-        gallery.insertAdjacentHTML('beforeend', createMarkup(hits));
+      gallery.innerHTML = '';
+      Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+      gallery.insertAdjacentHTML('beforeend', createMarkup(hits));
       lightbox.refresh();
+      
     }
-    if (page !== totalHits) {
+    if (page !== totalPages) {
         
         observer.observe(guard);
       }
-        gallery.innerHTML = createMarkup(hits);
+        // gallery.innerHTML = createMarkup(hits);
 
     
 
